@@ -16,7 +16,9 @@
         <template>
           <el-tabs :tab-position="tabPosition" style="height: 200px;">
             <el-tab-pane label="图文">
-              <column-table></column-table>
+              <div class="ovflow-auto">
+                <column-table></column-table>
+              </div>
             </el-tab-pane>
             <el-tab-pane label="音频">
               <column-table></column-table>
@@ -72,6 +74,9 @@ export default {
 </script>
 
 <style scoped>
+  .ovflow-auto{
+    overflow: auto;
+  }
   .add-title{
     display: flex;
     justify-content: space-between;

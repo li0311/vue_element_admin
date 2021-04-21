@@ -188,6 +188,22 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/users',
+    component: Layout,
+    children: [
+      {
+        path: 'users',
+        component: () => import('@/views/users/Users'),
+        name: 'Users',
+        meta: { 
+          title: '用户', 
+          icon: 'people', 
+          noCache: true 
+        }
+      }
+    ]
+  },
   // {
   //   path: '/permission',
   //   component: Layout,

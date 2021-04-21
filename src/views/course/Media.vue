@@ -107,9 +107,9 @@
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page="1"
+                :current-page="pageNum"
                 :page-sizes="[5,10,15]"
-                :page-size="100"
+                :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="totals">
         </el-pagination>
@@ -138,10 +138,12 @@ export default {
       meTitle: '', //输入框标题
       mediaList: [],
       listLoading: false,
-      totals: 10,
+      totals: 100,
       addShowType: false,
       updateType: false,
-      updatePropsData: {}
+      updatePropsData: {},
+      pageSize: 10,
+      pageNum: 1
     }
   },
   components: {
@@ -149,12 +151,12 @@ export default {
     UpdateList
   },
   created() {
-    this._getMediaList()
+    this._getMediaList(this.pageNum, this.pageSize)
   },
   methods: {
     // 请求数据
-    _getMediaList() {
-      fetchList().then(res => {
+    _getMediaList(page, limit) {
+      fetchList({page: page, limit: limit}).then(res => {
       this.mediaList = res.data.items
     })
     },
@@ -163,8 +165,8 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this._getMediaList()
+      this.pageNum = val
+      this._getMediaList(this.pageNum, this.pageSize)
     },
     // 展示模态框
     isShowAdd() {

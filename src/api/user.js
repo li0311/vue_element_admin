@@ -32,6 +32,7 @@ export function fetchList(query) {
 }
 
 export function fetchUserDetail(query) {
+    console.log(query);
     return request({
         url: '/vue-element-admin/user_detail',
         method: 'get',

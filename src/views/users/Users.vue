@@ -2,118 +2,77 @@
   <div>
     <el-card class="box-card" shadow="never">
       <div slot="header">
-        <el-button class="btn-add" @click="isShowAdd">
-          <svg-icon icon-class="edit" />
-          黑名单设置
-        </el-button>
+        <el-dropdown @command="handleCommand">
+          <el-button class="select-type" type="danger">
+            黑名单设置<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="1">禁止评论</el-dropdown-item>
+            <el-dropdown-item command="2">禁止访问</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <div class="right-con">
-          <el-dropdown>
-            <el-button class="select-type" type="primary">
-              商品状态<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>已下架</el-dropdown-item>
-              <el-dropdown-item>已上架</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
           <el-input class="search-title" v-model="meTitle" placeholder="请输入内容"></el-input>
           <el-button class="btn-add" @click="searchTitle">搜索</el-button>
         </div>
       </div>
       <div class="table-container">
         <el-table
-                :data="mediaList"
+                :data="userList"
                 border
                 v-loading="listLoading"
                 align="center"
-                style="width: 100%">
+                style="width: 100%"
+                @select="userSelect">
           <el-table-column
-                  prop="mediaList.id"
-                  align="center"
-                  label="ID"
-                  width="100"
-                  fixed="left">
-                  <template slot-scope="scope">{{scope.row.id}}</template>
+            type="selection"
+            width="55">
           </el-table-column>
           <el-table-column
                   align="center"
-                  label="专栏内容">
+                  label="用户">
                   <template slot-scope="scope">
                     <div class="content">
-                      <img :src="scope.row.cover" width="150px" alt="">
+                      <img :src="scope.row.user.avatar" alt="">
                       <div class="content-text">
-                        <p>{{scope.row.title}}</p>
-                        <span>{{scope.row.price | priceFilter}}</span>
+                        <p>{{scope.row.user.username}}</p>
                       </div>
                     </div>
                   </template>
           </el-table-column>
           <el-table-column
-                  prop="mediaList.isend"
+                  prop="userList.total_consume"
                   align="center"
-                  label="更新状态"
+                  label="消费总额"
                   width="100"
                   fixed="right">
-                  <template slot-scope="scope">
-                    <div class="end" v-show="scope.row.isend === 1">
-                      已完结
-                    </div>
-                    <div class="loading" v-show="scope.row.isend !== 1">
-                      连载中
-                    </div>
-                  </template>
+                  <template slot-scope="scope">{{scope.row.total_consume}}</template>
           </el-table-column>
           <el-table-column
-                  prop="mediaList.sub_count"
-                  align="center"
-                  label="订阅量"
-                  width="100"
-                  fixed="right">
-                  <template slot-scope="scope">{{scope.row.sub_count}}</template>
-          </el-table-column>
-          <el-table-column
-                  prop="mediaList.status"
-                  align="center"
-                  label="状态"
-                  width="100"
-                  fixed="right">
-                  <template slot-scope="scope">
-                    <div v-show="scope.row.status === 1" class="sold-out">
-                      已下架
-                    </div>
-                    <div  v-show="scope.row.status !== 1" class="sold-on">
-                      已上架
-                    </div>
-                  </template>
-          </el-table-column>
-          <el-table-column
-                  prop="mediaList.created_time"
+                  prop="userList.updated_time"
                   align="center"
                   label="创建时间"
                   width="160"
                   fixed="right">
-              <template slot-scope="scope">{{scope.row.created_time}}</template>
+              <template slot-scope="scope">{{scope.row.updated_time}}</template>
           </el-table-column>
           <el-table-column
                   align="center"
                   label="操作"
-                  width="280"
+                  width="350"
                   fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" type="warning" @click="handleCatalog(scope.$index,scope.row)">目录</el-button>
-              <el-button size="mini" type="primary" @click="handleUpdate(scope.$index,scope.row)">编辑</el-button>
-              <el-button size="mini" 
-                         type="success" 
-                         v-show="scope.row.status === 1"
-                         @click="scope.row.status = 0">
-                上架
-              </el-button>
-              <el-button size="mini" 
-                         v-show="scope.row.status !== 1"
-                         @click="scope.row.status = 1">
-                下架
-              </el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
+              <el-button type="primary" @click="isShowAdd(scope.$index,scope.row)">详情</el-button>
+              <el-button class="mr-btn" type="success" @click="handleUpdate(scope.$index,scope.row)">联系用户</el-button>
+              <el-dropdown @command="handleCommand2">
+                <el-button class="select-type" type="danger">
+                  黑名单设置<i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="1">禁止评论</el-dropdown-item>
+                  <el-dropdown-item command="2">禁止访问</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </template>
           </el-table-column>
         </el-table>
@@ -122,47 +81,54 @@
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page="1"
+                :current-page="pageNum"
                 :page-sizes="[5,10,15]"
-                :page-size="100"
+                :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="totals">
         </el-pagination>
       </div>
     </el-card>
-    <!-- <add-column :dialogFormVisible="addShowType" 
-              @changeShowType="changeShowType" /> -->
+    <user-detail :dialogFormVisible="addShowType" 
+              @changeShowType="changeShowType"
+              :detailData="detailData" />
   </div>
 </template>
 
 <script>
+import UserDetail from './UserDetail.vue'
+
 // 接口
-import { fetchList, deleteAudio } from '@/api/column.js'
+import { fetchList, fetchUserDetail } from '@/api/user.js'
 
 export default {
   name: 'Media',
   data() {
     return {
       meTitle: '', //输入框标题
-      mediaList: [],
+      userList: [],
       listLoading: false,
-      totals: 10,
+      totals: 100,
       addShowType: false,
       updateType: false,
-      updatePropsData: {}
+      updatePropsData: {},
+      pageSize: 10,
+      pageNum: 1,
+      selectUser: [],
+      detailData: {}
     }
   },
   components: {
-    
+    UserDetail
   },
   created() {
-    this._getMediaList()
+    this._getUserList(this.pageNum, this.pageSize)
   },
   methods: {
     // 请求数据
-    _getMediaList() {
-      fetchList().then(res => {
-        this.mediaList = res.data.items
+    _getUserList(page, limit) {
+      fetchList({page: page, limit: limit}).then(res => {
+        this.userList = res.data.items
       })
     },
     // 普通事件方法
@@ -170,12 +136,19 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this._getMediaList()
+      this.pageNum = val
+      this._getUserList(this.pageNum, this.pageSize)
     },
     // 展示模态框
-    isShowAdd() {
+    isShowAdd(_, row) {
       this.addShowType = !this.addShowType
+      const data = this.userList.find(item => item.id == row.id)
+      this.detailData = data
+
+      // 接口传id会响应数据
+      fetchUserDetail({id: row.id}).then(res => {
+        // console.log(res);
+      })
     },
     changeShowType(type) {
       this.addShowType = type
@@ -202,35 +175,49 @@ export default {
         }
       })
     },
-    // 更新
-    editData(payload) {
-      this.updateType = payload.type
-      const list = payload.data
-      const currentIndex = this.mediaList.findIndex(item => item.id === list.id)
-      this.mediaList[currentIndex].title = list.title
-      this.mediaList[currentIndex].price = list.price
-      this.mediaList[currentIndex].status = list.status
-      this.mediaList[currentIndex].content = list.content
-    },
-    handleDelete(index, row) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    // 设置单个用户黑名单
+    handleCommand2(command) {
+      // 禁止评论 1 禁止访问 2
+      if (command == 1) {
+        this.$confirm('是否要禁止用户评论?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-      }).then(() => {
-        deleteAudio(row.id).then(res => {
-          if (res.code === 20000) {
-            this.$message.success('删除成功')
-            const currentIndex = this.mediaList.findIndex(item => item.id === row.id)
-            this.mediaList.splice(currentIndex, 1)
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });          
-      })
+        }).then(() => {
+          // 这里好像不能写代码 写了取消弹窗也会执行
+          // const currentIndex = this.userList.findIndex(item => item.id === row.id)
+          // this.userList[currentIndex].no_comment = 0
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+        return
+      }
+      if (command == 2) {
+        this.$confirm('是否要禁止用户访问?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // const currentIndex = this.userList.findIndex(item => item.id === row.id)
+          // this.userList[currentIndex].no_access = 0
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+      }
     },
     // 搜索
     searchTitle() {
@@ -241,6 +228,59 @@ export default {
       }
       this.mediaList =  this.mediaList.filter(item => item.title === title)
     },
+    // 选中一个用户
+    userSelect(selection, row) {
+      // console.log(row);
+      // row为选中那一行的信息
+      this.selectUser = selection
+    },
+    // 禁止评论
+    handleCommand(command) {
+      if (!this.selectUser.length) {
+        this.$message.error('请先选中需要操作的用户')
+        return
+      }
+      
+      // 禁止评论 1 禁止访问 2
+      if (command == 1) {
+        this.$confirm('是否要禁止用户评论?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.selectUser.map(item => item.no_comment = 0)
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+        return
+      }
+      if (command == 2) {
+        this.$confirm('是否要禁止用户访问?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.selectUser.map(item => item.no_access = 0)
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+      }
+
+    }
 
   },
   filters: {
@@ -261,6 +301,12 @@ export default {
   /* 图文内容样式 */
   .content{
     display: flex;
+    align-items: center;
+  }
+  .content img{
+    width: 80px;
+    border-radius: 50%;
+    overflow: hidden;
   }
   .content-text{
     display: flex;
@@ -295,8 +341,13 @@ export default {
   }
 
   .select-type{
-    background-color: #fff;
+    background-color: #f00;
     border-color: #ccc;
-    color: #888;
+    color: #fff;
+  }
+
+  /* 联系用户与黑名单之间的间距 */
+  .mr-btn{
+    margin-right: 8px;
   }
 </style>

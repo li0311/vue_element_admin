@@ -162,7 +162,7 @@ export default {
     },
     // 普通事件方法
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pageNum = val
     },
     handleCurrentChange(val) {
       this.pageNum = val

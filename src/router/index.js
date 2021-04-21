@@ -204,6 +204,44 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path:'/pay',
+    component: Layout,
+    redirect: '/pay/order',
+    alwaysShow: true,
+    name: 'Pay',
+    meta: {
+      title: '交易',
+      icon: 'money'
+    },
+    children: [
+      {
+        path: 'order',
+        component: () => import('@/views/pay/Order'),
+        name: 'Order',
+        meta: {
+          title: '订单管理',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'assets',
+        component: () => import('@/views/pay/Assets'),
+        name: 'Assets',
+        meta: {
+          title: '资产管理'
+        }
+      },
+      {
+        path: 'payment',
+        component: () => import('@/views/pay/Payment'),
+        name: 'Payment',
+        meta: {
+          title: '支付设置'
+        }
+      }
+    ]
+  },
   // {
   //   path: '/permission',
   //   component: Layout,

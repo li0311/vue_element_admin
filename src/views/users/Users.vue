@@ -4,7 +4,7 @@
       <div slot="header">
         <el-button class="btn-add" @click="isShowAdd">
           <svg-icon icon-class="edit" />
-          新增专栏
+          黑名单设置
         </el-button>
         <div class="right-con">
           <el-dropdown>
@@ -130,19 +130,12 @@
         </el-pagination>
       </div>
     </el-card>
-    <add-column :dialogFormVisible="addShowType" 
-              @changeShowType="changeShowType" />
-    <update-column v-if="updateType" 
-                 :updateData="updatePropsData"
-                 :updateVisible="updateType"
-                 @changeUpdateType="changeUpdateType"
-                 @editData="editData" />
+    <!-- <add-column :dialogFormVisible="addShowType" 
+              @changeShowType="changeShowType" /> -->
   </div>
 </template>
 
 <script>
-import AddColumn from './columnChildren/AddColumn.vue'
-import UpdateColumn from './columnChildren/UpdateColumn.vue'
 // 接口
 import { fetchList, deleteAudio } from '@/api/column.js'
 
@@ -160,8 +153,7 @@ export default {
     }
   },
   components: {
-    AddColumn,
-    UpdateColumn
+    
   },
   created() {
     this._getMediaList()

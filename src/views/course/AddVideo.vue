@@ -24,7 +24,14 @@
           <Tinymce ref="editor" v-model="addForm.content" :height="400" />
         </el-form-item>
         <el-form-item label="课程内容" style="margin-bottom: 30px;">
-          <Tinymce ref="editor" v-model="addForm.content" :height="400" />
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-change="handleChangeVideo"
+            :file-list="fileList">
+            <el-button size="small" type="primary">上传视频</el-button>
+            <div slot="tip" class="el-upload__tip">支持mp4，avi，wmv，mov，flv，rmvb，3gp，m4v，mkv格式；文件最大不超过5G。 当前店铺版本最大支持720高清转码</div>
+          </el-upload>
         </el-form-item>
         <el-form-item label="课程价格" style="margin-bottom: 30px;">
           <el-input-number v-model="addForm.price" @change="handleChange" :min="1" :max="100"></el-input-number>
@@ -58,7 +65,11 @@ export default {
         price: 0,
         status: 0
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      fileList: [{
+        name: 'food.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }]
     }
   },
   props: {
@@ -96,6 +107,10 @@ export default {
     // 计数器
     handleChange(value) {
       this.addForm.price = value
+    },
+    // 上传文件
+    handleChangeVideo(file, fileList) {
+      this.fileList = fileList.slice(-3);
     }
   }
 }

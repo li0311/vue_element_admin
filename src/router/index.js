@@ -176,6 +176,15 @@ export const asyncRoutes = [
           title: '专栏',
           roles: ['admin']
         }
+      },
+      {
+        path: 'column_detail',
+        hidden: true,
+        component: () => import('@/views/course/columnChildren/Catalogue'),
+        name: 'Catalogue',
+        meta: {
+          title: '目录详情'
+        }
       }
     ]
   },

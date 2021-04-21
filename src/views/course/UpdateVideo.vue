@@ -1,13 +1,13 @@
 <template>
-  <div v-if="Object.keys(addForm).length !== 0">
+  <div>
     <el-dialog class="add-content" 
-               title="新增" 
-               :visible.sync="dialogFormVisible"
+               title="修改" 
+               :visible.sync="updateVisible"
                fullscreen
-               @close="$emit('changeShowType', false)">
-      <el-form class="add-form" :model="addForm">
+               @close="$emit('changeUpdateType', false)">
+      <el-form class="add-form" :model="updateForm">
         <el-form-item label="标题" :label-width="formLabelWidth">
-          <el-input v-model="addForm.title" autocomplete="off"></el-input>
+          <el-input v-model="updateForm.title" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="封面" :label-width="formLabelWidth">
           <el-upload
@@ -16,29 +16,36 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
-            <img v-if="addForm.imageUrl" :src="addForm.imageUrl" class="avatar">
+            <img v-if="updateForm.imageUrl" :src="updateForm.imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="试看内容" style="margin-bottom: 30px;">
-          <Tinymce ref="editor" v-model="addForm.content" :height="400" />
+        <el-form-item label="课程介绍" style="margin-bottom: 30px;">
+          <Tinymce ref="editor" v-model="updateForm.content" :height="400" />
         </el-form-item>
         <el-form-item label="课程内容" style="margin-bottom: 30px;">
-          <Tinymce ref="editor" v-model="addForm.content" :height="400" />
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-change="handleChangeVideo"
+            :file-list="fileList">
+            <el-button size="small" type="primary">上传视频</el-button>
+            <div slot="tip" class="el-upload__tip">支持mp4，avi，wmv，mov，flv，rmvb，3gp，m4v，mkv格式；文件最大不超过5G。 当前店铺版本最大支持720高清转码</div>
+          </el-upload>
         </el-form-item>
         <el-form-item label="课程价格" style="margin-bottom: 30px;">
-          <el-input-number v-model="addForm.price" @change="handleChange" :min="1" :max="100"></el-input-number>
+          <el-input-number v-model="updateForm.price" @change="handleChange" :min="1" :max="100"></el-input-number>
         </el-form-item>
         <el-form-item label="状态" style="margin-bottom: 30px;">
-          <el-radio-group v-model="addForm.status">
-            <el-radio label="下架"></el-radio>
-            <el-radio label="上架"></el-radio>
+          <el-radio-group v-model="updateForm.status">
+            <el-radio :label="num1">下架</el-radio>
+            <el-radio :label="num2">上架</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancleAdd">取 消</el-button>
-        <el-button type="primary" @click="subAdd">确 定</el-button>
+        <el-button @click="cancleAdd">取消</el-button>
+        <el-button type="primary" @click="subAdd">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -47,35 +54,56 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 
+import { updateVideo } from '@/api/video.js'
+
 export default {
   name: 'AddList',
   data() {
     return {
-      addForm: {
+      updateForm: {
         title: '',
         imageUrl: '',
         content: '',
-        price: 0,
+        price: '',
         status: 0
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      num1: 1,
+      num2: 0,
+      fileList: [{
+        name: 'food.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }]
     }
   },
   props: {
-    dialogFormVisible: {
+    updateVisible: {
       type: Boolean,
       default: false
+    },
+    updateData: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
+  },
+  mounted() {
+    console.log(this.updateData);
+    this.updateForm = Object.assign({}, this.updateData)
   },
   components: {
     Tinymce
   },
   methods: {
     cancleAdd() {
-      this.$emit('changeShowType', false)
+      this.$emit('changeUpdateType', false)
     },
     subAdd() {
-      this.$emit('changeShowType', false)
+      updateVideo(this.updateForm).then(res => {
+        this.$message.success('更新数据成功')
+        this.$emit('editData', {type: false, data: this.updateForm})
+      })
     },
     // 上传
     handleAvatarSuccess(res, file) {
@@ -95,7 +123,11 @@ export default {
     },
     // 计数器
     handleChange(value) {
-      this.addForm.price = value
+      this.updateForm.price = value
+    },
+    // 视频上传
+    handleChangeVideo(file, fileList) {
+      this.fileList = fileList.slice(-3);
     }
   }
 }

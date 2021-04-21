@@ -20,8 +20,8 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="试看内容" style="margin-bottom: 30px;">
-          <Tinymce ref="editor" v-model="addForm.content" :height="400" />
+        <el-form-item label="课程介绍" style="margin-bottom: 30px;">
+          <el-input type="textarea" v-model="addForm.try" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="课程内容" style="margin-bottom: 30px;">
           <Tinymce ref="editor" v-model="addForm.content" :height="400" />
@@ -33,6 +33,12 @@
           <el-radio-group v-model="addForm.status">
             <el-radio label="下架"></el-radio>
             <el-radio label="上架"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="更新状态" style="margin-bottom: 30px;">
+          <el-radio-group v-model="addForm.isend">
+            <el-radio label="连载中"></el-radio>
+            <el-radio label="已完结"></el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -55,10 +61,18 @@ export default {
         title: '',
         imageUrl: '',
         content: '',
+        try: '',
         price: 0,
-        status: 0
+        status: 0,
+        isend: 0
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      num1: 1,
+      num2: 0,
+      fileList: [{
+        name: 'food.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }]
     }
   },
   props: {
@@ -96,6 +110,10 @@ export default {
     // 计数器
     handleChange(value) {
       this.addForm.price = value
+    },
+    // 上传文件
+    handleChangeVideo(file, fileList) {
+      this.fileList = fileList.slice(-3);
     }
   }
 }

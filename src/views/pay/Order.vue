@@ -130,7 +130,7 @@ export default {
       totals: 100,
       updatePropsData: {},
       pageSize: 10,
-      pageNum: 1
+      pageNum: 1,
     }
   },
   created() {
@@ -164,8 +164,32 @@ export default {
     },
     // 导出
     derive() {
-
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
+        const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
+        const list = this.orderList
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: this.filename,
+          autoWidth: this.autoWidth,
+          bookType: this.bookType
+        })
+        this.downloadLoading = false
+      })
     },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
+    },
+
     // 删除
     handleDelete(_, row) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

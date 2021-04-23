@@ -207,7 +207,7 @@ export default {
 
       if (start_time == '2029-01-15 10:00:00') return '未开始'
       if (end_time == '2020-12-15 10:00:00') return '已结束'
-      if (start_time == '2021-01-15 10:00:00' && end_time == '2031-01-15 10:00:00') return '已下架'
+      if (start_time == '2021-01-15 10:00:00' && end_time == '2031-01-15 10:00:00') return '秒杀中'
     },
     // 添加
     addGroup() {
@@ -299,12 +299,12 @@ export default {
 
           if (!this.isDidEdit) {
             // 调接口增加数据
-            await createGroup(this.addForm)
+            // await createGroup(this.addForm)
             // 获取id id为数组中最后一个元素的id加一 这样删除不会由bug
             const list = this.groupList
             const currentId = list.lenght === 0 ? 0 : list[list.length -1].id
             const idForm = {...this.addForm, id: currentId + 1}
-            this.groupList = [...this.paymentList, idForm]
+            this.groupList.push(idForm)
             this.$message.success('提交成功')
             this.dialogFormVisible = false
           }

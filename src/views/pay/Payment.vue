@@ -144,6 +144,7 @@ export default {
     // 添加
     addAcount() {
       this.addForm = {}
+      this.isDidEdit = false
       this.dialogFormVisible = !this.dialogFormVisible
     },
     // 省市区

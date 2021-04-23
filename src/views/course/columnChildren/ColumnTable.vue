@@ -4,6 +4,7 @@
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
+      height="500"
       style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column
@@ -70,7 +71,17 @@ export default {
 
     // 表格
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      if (val.length >= 2) {
+        this.$message.error('最多只能选中一个')
+        return
+      }
+      const obj = {
+        cover: val[0].cover,
+        title: val[0].title,
+        price: val[0].price
+      }
+
+      this.$emit('relevanceData', obj)
     }
   },
   filters: {

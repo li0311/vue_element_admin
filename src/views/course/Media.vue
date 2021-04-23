@@ -157,8 +157,8 @@ export default {
     // 请求数据
     _getMediaList(page, limit) {
       fetchList({page: page, limit: limit}).then(res => {
-      this.mediaList = res.data.items
-    })
+        this.mediaList = res.data.items
+      })
     },
     // 普通事件方法
     handleSizeChange(val) {

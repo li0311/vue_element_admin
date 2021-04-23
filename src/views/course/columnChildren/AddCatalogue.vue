@@ -1,6 +1,7 @@
 <template>
   <el-dialog title="选择课程" 
              :visible.sync="dialogFormVisible" 
+             width="70%"
              @close="$emit('changeShowType', false)">
     <el-card class="box-card" shadow="never">
       <div slot="header" class="add-title">
@@ -14,11 +15,9 @@
       <!-- 主题内容 -->
       <div class="table-container">
         <template>
-          <el-tabs :tab-position="tabPosition" style="height: 200px;">
+          <el-tabs :tab-position="tabPosition" style="height: 430px;">
             <el-tab-pane label="图文">
-              <div class="ovflow-auto">
-                <column-table></column-table>
-              </div>
+                <column-table @relevanceData="relevanceData"></column-table>
             </el-tab-pane>
             <el-tab-pane label="音频">
               <column-table></column-table>
@@ -47,7 +46,8 @@ export default {
   data() {
     return {
       tabPosition: 'left',
-      meTitle: ''
+      meTitle: '',
+      data: {}
     }
   },
   props: {
@@ -65,9 +65,14 @@ export default {
     },
     subAdd() {
       this.$emit('changeShowType', false)
+      this.$emit('relevanceData', this.data)
     },
     searchTitle() {
 
+    },
+    // 表格传递的数据
+    relevanceData(data) {
+      this.data = data
     }
   }
 }

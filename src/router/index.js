@@ -129,7 +129,7 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  // 
+  // 课程
   {
     path:'/course',
     component: Layout,
@@ -188,6 +188,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 用户
   {
     path: '/users',
     component: Layout,
@@ -198,12 +199,13 @@ export const asyncRoutes = [
         name: 'Users',
         meta: { 
           title: '用户', 
-          icon: 'people', 
+          icon: 'user', 
           noCache: true 
         }
       }
     ]
   },
+  // 交易
   {
     path:'/pay',
     component: Layout,
@@ -238,6 +240,44 @@ export const asyncRoutes = [
         name: 'Payment',
         meta: {
           title: '支付设置'
+        }
+      }
+    ]
+  },
+  // 营销
+  {
+    path:'/marketing',
+    component: Layout,
+    redirect: '/marketing/group',
+    alwaysShow: true,
+    name: 'Marketing',
+    meta: {
+      title: '营销',
+      icon: 'international'
+    },
+    children: [
+      {
+        path: 'group',
+        component: () => import('@/views/marketing/Group'),
+        name: 'Group',
+        meta: {
+          title: '拼团'
+        }
+      },
+      {
+        path: 'flashsale',
+        component: () => import('@/views/marketing/Flashsale'),
+        name: 'Flashsale',
+        meta: {
+          title: '秒杀'
+        }
+      },
+      {
+        path: 'coupon',
+        component: () => import('@/views/marketing/Coupon'),
+        name: 'Coupon',
+        meta: {
+          title: '优惠券'
         }
       }
     ]

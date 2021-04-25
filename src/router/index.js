@@ -282,6 +282,61 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 工具
+  {
+    path:'/tool',
+    component: Layout,
+    redirect: '/tool/bbs',
+    alwaysShow: true,
+    name: 'Tool',
+    meta: {
+      title: '工具',
+      icon: 'tree'
+    },
+    children: [
+      {
+        path: 'bbs',
+        component: () => import('@/views/tool/Bbs'),
+        name: 'Bbs',
+        meta: {
+          title: '小社群'
+        }
+      },
+      {
+        path: 'question',
+        component: () => import('@/views/tool/Question'),
+        name: 'Question',
+        meta: {
+          title: '题库'
+        }
+      },
+      {
+        path: 'testpaper',
+        component: () => import('@/views/tool/Testpaper'),
+        name: 'Testpaper',
+        meta: {
+          title: '试卷'
+        }
+      },
+      {
+        path: 'book',
+        component: () => import('@/views/tool/Book'),
+        name: 'Book',
+        meta: {
+          title: '电子书'
+        }
+      },
+      {
+        path: 'bbs_post',
+        hidden: true,
+        component: () => import('@/views/tool/toolChildren/ToolPost'),
+        name: 'ToolPost',
+        meta: {
+          title: '帖子详情'
+        }
+      }
+    ]
+  },
   // {
   //   path: '/permission',
   //   component: Layout,

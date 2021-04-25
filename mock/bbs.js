@@ -32,9 +32,9 @@ module.exports = [{
                     content: '@csentence(5, 10)',
                     user: {
                         id: '@increment',
-                        username: "admin",
+                        username: '@csentence(2, 3)',
                         nickname: "",
-                        avatar: ""
+                        avatar: '@image("100x100")'
                     },
                     'is_top|1': [0, 1],
                     post_id: '@increment',

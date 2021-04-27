@@ -16,7 +16,8 @@
                 border
                 v-loading="listLoading"
                 align="center"
-                style="width: 100%">
+                style="width: 100%"
+                @select="handleSelect">
           <el-table-column
             type="selection"
             width="55">
@@ -35,7 +36,7 @@
                   <template slot-scope="scope">{{scope.row.goods[0].title}}</template>
           </el-table-column>
           <el-table-column
-                  prop="orderList.sub_count"
+                  prop="orderList.type"
                   align="center"
                   label="订单类型"
                   width="100"
@@ -126,6 +127,7 @@ export default {
     return {
       meTitle: '', //输入框标题
       orderList: [],
+      selectList: [],
       listLoading: false,
       totals: 100,
       updatePropsData: {},
@@ -162,13 +164,17 @@ export default {
       this.pageNum = val
       this._getOrderList(this.pageNum, this.pageSize)
     },
+    // 选中的数据
+    handleSelect(selection) {
+      this.selectList = selection
+    },
     // 导出
     derive() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
-        const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
-        const list = this.orderList
+        const tHeader = ['订单号', '商品名称', '订单类型', '订单状态', '支付方式', '创建时间']
+        const filterVal = ['id', 'title', 'type', 'status', 'pay_method', 'created_time']
+        const list = this.selectList
         const data = this.formatJson(filterVal, list)
         excel.export_json_to_excel({
           header: tHeader,

@@ -334,6 +334,24 @@ export const asyncRoutes = [
         meta: {
           title: '帖子详情'
         }
+      },
+      {
+        path: 'testpaper_form',
+        hidden: true,
+        component: () => import('@/views/tool/toolChildren/TestpaperForm'),
+        name: 'TestpaperForm',
+        meta: {
+          title: '组卷'
+        }
+      },
+      {
+        path: 'testpaper_test',
+        hidden: true,
+        component: () => import('@/views/tool/toolChildren/TestpaperTest'),
+        name: 'TestpaperTest',
+        meta: {
+          title: '考试管理'
+        }
       }
     ]
   },

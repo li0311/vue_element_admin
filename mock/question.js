@@ -24,7 +24,7 @@ module.exports = [{
 
                 const val = {
                     radio: {
-                        value: 0,
+                        value: [0],
                         options: ['选项1', '选项2']
                     },
                     checkbox: {
@@ -32,7 +32,7 @@ module.exports = [{
                         options: ['选项1', '选项2', '选项3']
                     },
                     trueOrfalse: {
-                        value: 0,
+                        value: [0],
                         options: ['正确', '错误']
                     },
                     answer: {
